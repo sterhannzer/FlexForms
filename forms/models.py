@@ -5,7 +5,7 @@ from django.db import models
 class Schema(models.Model):
     title = models.CharField(max_length=128)
     description = models.TextField()
-    owner = models.ForeignKey(User)
+    owner = models.ForeignKey(User, null=True)
     fields = models.TextField(blank=True)
 
     def __str__(self):

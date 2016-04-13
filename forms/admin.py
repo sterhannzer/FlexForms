@@ -10,7 +10,14 @@ from forms.models import (
 class SchemaAdmin(admin.ModelAdmin):
     save_as = True
     list_display = ('title', 'owner')
-    readonly_fields = ('fields',)
+    readonly_fields = ('fields', 'owner')
+
+    def save_model(self, request, obj, form, change):
+        if not change:
+            obj.owner = request.user
+        super(SchemaAdmin, self).save_model(
+            request, obj, form, change
+        )
 
 
 admin.site.register(Schema, SchemaAdmin)
