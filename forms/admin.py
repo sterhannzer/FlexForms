@@ -34,6 +34,14 @@ class SchemaAdmin(admin.ModelAdmin):
         )
 
 
+class QuestionnaireValueInline(admin.TabularInline):
+    model = QuestionnaireValue
+    extra = 1
+
+
+class QuestionnaireAdmin(admin.ModelAdmin):
+    inlines = (QuestionnaireValueInline,)
+
+
 admin.site.register(Schema, SchemaAdmin)
-admin.site.register(Questionnaire)
-admin.site.register(QuestionnaireValue)
+admin.site.register(Questionnaire, QuestionnaireAdmin)
