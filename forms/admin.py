@@ -15,7 +15,7 @@ class SchemaFieldInline(admin.TabularInline):
     extra = 1
     formfield_overrides = {
         models.TextField: {
-            'widget': Textarea(attrs={'rows': 1, 'cols': 20})
+            'widget': Textarea(attrs={'rows': 1, 'cols': 30})
         }
     }
 
@@ -23,7 +23,7 @@ class SchemaFieldInline(admin.TabularInline):
 class SchemaAdmin(admin.ModelAdmin):
     save_as = True
     list_display = ('title', 'owner')
-    readonly_fields = ('fields', 'owner')
+    readonly_fields = ('owner',)
     inlines = (SchemaFieldInline,)
 
     def save_model(self, request, obj, form, change):
@@ -35,6 +35,5 @@ class SchemaAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Schema, SchemaAdmin)
-admin.site.register(SchemaField)
 admin.site.register(Questionnaire)
 admin.site.register(QuestionnaireValue)

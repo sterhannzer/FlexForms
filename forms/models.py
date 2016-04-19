@@ -6,7 +6,6 @@ class Schema(models.Model):
     title = models.CharField(max_length=128)
     description = models.TextField()
     owner = models.ForeignKey(User, null=True)
-    fields = models.TextField(blank=True)
 
     def __str__(self):
         return self.title
@@ -15,15 +14,20 @@ class Schema(models.Model):
 class SchemaField(models.Model):
     TYPES = (
         ('int', 'Integer'),
-        ('char', 'CharField')
+        ('date', 'Date'),
+        ('str', 'String'),
+        ('text', 'Text'),
     )
     schema = models.ForeignKey(Schema)
     label = models.CharField(max_length=64)
-    help_text = models.TextField()
-    type = models.CharField(max_length=4, choices=TYPES)
+    help_text = models.TextField(blank=True)
+    type = models.CharField(max_length=4, choices=TYPES, default='char')
     is_required = models.BooleanField()
-    initial_value = models.TextField()
+    initial_value = models.TextField(blank=True)
     order = models.IntegerField()
+
+    def __str__(self):
+        return self.label
 
 
 class Questionnaire(models.Model):
