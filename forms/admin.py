@@ -1,4 +1,7 @@
 from django.contrib import admin
+from django.db import models
+from django.forms import Textarea
+
 from forms.models import (
     Schema,
     SchemaField,
@@ -7,10 +10,21 @@ from forms.models import (
 )
 
 
+class SchemaFieldInline(admin.TabularInline):
+    model = SchemaField
+    extra = 1
+    formfield_overrides = {
+        models.TextField: {
+            'widget': Textarea(attrs={'rows': 1, 'cols': 20})
+        }
+    }
+
+
 class SchemaAdmin(admin.ModelAdmin):
     save_as = True
     list_display = ('title', 'owner')
     readonly_fields = ('fields', 'owner')
+    inlines = (SchemaFieldInline,)
 
     def save_model(self, request, obj, form, change):
         if not change:
