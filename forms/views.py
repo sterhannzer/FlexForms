@@ -6,6 +6,6 @@ from forms.models import Schema
 from forms.serializers import SchemaSerializer
 
 
-class SchemaViewSet(viewsets.ModelViewSet):
+class SchemaViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Schema.objects.all()
     serializer_class = SchemaSerializer

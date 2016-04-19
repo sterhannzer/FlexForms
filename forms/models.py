@@ -18,7 +18,7 @@ class SchemaField(models.Model):
         ('str', 'String'),
         ('text', 'Text'),
     )
-    schema = models.ForeignKey(Schema)
+    schema = models.ForeignKey(Schema, related_name='fields')
     label = models.CharField(max_length=64)
     help_text = models.TextField(blank=True)
     type = models.CharField(max_length=4, choices=TYPES, default='char')
