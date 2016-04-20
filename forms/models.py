@@ -1,6 +1,8 @@
 from django.contrib.auth.models import User
 from django.db import models
 
+from adminsortable.models import SortableMixin
+
 
 class Schema(models.Model):
     title = models.CharField(max_length=128)
@@ -11,7 +13,7 @@ class Schema(models.Model):
         return self.title
 
 
-class SchemaField(models.Model):
+class SchemaField(SortableMixin):
     TYPES = (
         ('int', 'Integer'),
         ('date', 'Date'),
@@ -24,7 +26,10 @@ class SchemaField(models.Model):
     type = models.CharField(max_length=4, choices=TYPES, default='char')
     is_required = models.BooleanField()
     initial_value = models.TextField(blank=True)
-    order = models.IntegerField()
+    order = models.PositiveIntegerField(default=0, editable=False, db_index=True)
+
+    class Meta:
+        ordering = ['order']
 
     def __str__(self):
         return self.label

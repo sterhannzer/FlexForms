@@ -2,6 +2,11 @@ from django.contrib import admin
 from django.db import models
 from django.forms import Textarea
 
+from adminsortable.admin import (
+    NonSortableParentAdmin,
+    SortableTabularInline,
+)
+
 from forms.models import (
     Schema,
     SchemaField,
@@ -10,9 +15,9 @@ from forms.models import (
 )
 
 
-class SchemaFieldInline(admin.TabularInline):
+class SchemaFieldInline(SortableTabularInline):
     model = SchemaField
-    extra = 1
+    extra = 0
     formfield_overrides = {
         models.TextField: {
             'widget': Textarea(attrs={'rows': 1, 'cols': 30})
@@ -20,7 +25,7 @@ class SchemaFieldInline(admin.TabularInline):
     }
 
 
-class SchemaAdmin(admin.ModelAdmin):
+class SchemaAdmin(NonSortableParentAdmin):
     save_as = True
     list_display = ('title', 'owner')
     readonly_fields = ('owner',)
