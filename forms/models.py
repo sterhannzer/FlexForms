@@ -38,10 +38,9 @@ class SchemaField(SortableMixin):
 class Questionnaire(models.Model):
     created_date = models.DateTimeField()
     schema = models.ForeignKey(Schema)
-    values = models.TextField(blank=True)
 
 
 class QuestionnaireValue(models.Model):
-    questionnaire = models.ForeignKey(Questionnaire)
+    questionnaire = models.ForeignKey(Questionnaire, related_name='values')
     field_id = models.IntegerField()
     value = models.TextField()
