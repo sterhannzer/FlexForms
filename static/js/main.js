@@ -4,13 +4,14 @@ import React from 'react'
 import { render } from 'react-dom'
 
 import Header from './components/Header'
-import NotFound from './components/NotFound'
+import QuestionnaireForm from './components/QuestionnaireForm'
+
 
 render(
   <div>
       <Header />
       <div className="container">
-          <NotFound />
+          <QuestionnaireForm schemaSlug={window.location.pathname.split('/')[2]} />
       </div>
   </div>,
   document.getElementById('content')
