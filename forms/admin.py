@@ -1,3 +1,4 @@
+import pdb
 from django.contrib import admin
 from django.db import models
 from django.forms import Textarea
@@ -27,16 +28,26 @@ class SchemaFieldInline(SortableTabularInline):
 
 class SchemaAdmin(NonSortableParentAdmin):
     save_as = True
-    list_display = ('title', 'owner')
+    list_display = ('title', 'owner', 'get_url')
     readonly_fields = ('owner',)
     inlines = (SchemaFieldInline,)
+    _path = None
 
     def save_model(self, request, obj, form, change):
         if not change:
             obj.owner = request.user
+
         super(SchemaAdmin, self).save_model(
             request, obj, form, change
         )
+
+    def get_url(self, obj):
+        return self._path + obj.url
+
+    def get_queryset(self, request):
+        queryset = super(SchemaAdmin, self).get_queryset(request)
+        self._path = request.META.get('HTTP_HOST')
+        return queryset
 
 
 class QuestionnaireValueInline(admin.TabularInline):

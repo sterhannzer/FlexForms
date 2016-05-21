@@ -1,5 +1,7 @@
 from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
 from django.db import models
+import pdb
 
 from adminsortable.models import SortableMixin
 
@@ -11,6 +13,10 @@ class Schema(models.Model):
 
     def __str__(self):
         return self.title
+
+    @property
+    def url(self):
+        return reverse('base', kwargs={'id': self.id})
 
 
 class SchemaField(SortableMixin):
