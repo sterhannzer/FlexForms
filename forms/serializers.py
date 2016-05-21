@@ -9,7 +9,6 @@ from forms.models import (
 
 
 class SchemaFieldsSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = SchemaField
         fields = (
@@ -40,7 +39,6 @@ class SchemaSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class QuestionnaireFieldsSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = QuestionnaireValue
         fields = (
