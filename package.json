@@ -21,7 +21,8 @@
     "browserify": "~12.0.2",
     "standard": "~5.4.1",
     "underscore": "*",
-    "requirejs": "^2.2.0"
+    "requirejs": "^2.2.0",
+    "react-bootstrap": "^0.29"
   },
   "devDependencies": {
     "babel-preset-es2015": "^6.1.2",

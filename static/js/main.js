@@ -3,7 +3,15 @@
 import React from 'react'
 import { render } from 'react-dom'
 
+import Header from './components/Header'
+import NotFound from './components/NotFound'
+
 render(
-  <h1>Hello, world!!</h1>,
+  <div>
+      <Header />
+      <div className="container">
+          <NotFound />
+      </div>
+  </div>,
   document.getElementById('content')
 );
