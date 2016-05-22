@@ -4,11 +4,13 @@
 import React, { Component, PropTypes } from 'react';
 import { Nav, NavItem, Navbar } from 'react-bootstrap';
 
+import GlobalLayout from '../layouts/GlobalLayout';
+import NotFound from '../NotFound';
+
 import QuestionnaireHeader from './QuestionnaireHeader';
-import NotFound from './NotFound'
 
 
-export default class QuestionnaireForm extends Component {
+export default class QuestionnaireForm extends GlobalLayout {
     constructor(props) {
         super(props);
         this.state = {
@@ -18,12 +20,16 @@ export default class QuestionnaireForm extends Component {
     };
 
     componentDidMount() {
-        this.loadSchema(this.props.schemaSlug);
+        this.loadSchema(this.props.params.schemaSlug);
     }
 
-    render() {
+    renderContent() {
         if (this.state.schemaLoaded && !this.state.schema.url) {
-            return <NotFound />;
+            return <NotFound
+                title={"Questionnaire Not Found!"}
+                body={"Questionnaire cannot be found in current location. Please make sure that you have proper access and questionnaire is still valid."}
+                renderAsLayout={false}
+            />;
         }
 
         return <QuestionnaireHeader
@@ -39,7 +45,7 @@ export default class QuestionnaireForm extends Component {
                 schema: schema,
                 schemaLoaded: true
             }))
-            .catch(err => console.error(url, err.toString()));
+            .catch(err => console.error(slug, err.toString()));
     }
 
 };

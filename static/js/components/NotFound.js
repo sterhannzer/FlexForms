@@ -1,25 +1,40 @@
 'use strict';
 
-import React, { Component, PropTypes } from 'react'
+import React, { Component, PropTypes } from 'react';
 import { Jumbotron, Button } from 'react-bootstrap';
 
+import GlobalLayout from './layouts/GlobalLayout'
 
-export default class NotFound extends Component {
-    render() {
+
+export default class NotFound extends GlobalLayout {
+    renderContent() {
         return (
             <Jumbotron>
-                <h1>Questionnaire Not Found!</h1>
-                <p>Questionnaire cannot be found in current location. Make sure that you have proper access and questionnaire is still valid.</p>
+                <h1>{this.props.title}</h1>
+                <p>{this.props.body}</p>
                 <p><Button bsStyle="primary" href={this.props.homeUrl}>Go back to the home page</Button></p>
             </Jumbotron>
         );
     }
+
+    render() {
+        if (this.props.renderAsLayout) {
+            return super.render();
+        }
+        return this.renderContent();
+    }
 }
 
 NotFound.propTypes = {
-    homeUrl: React.PropTypes.string
+    homeUrl: PropTypes.string,
+    title: PropTypes.string,
+    body: PropTypes.string,
+    renderAsLayout: PropTypes.bool
 };
 
 NotFound.defaultProps = {
-    homeUrl: "/"
+    homeUrl: "/",
+    title: "Page Not Found!",
+    body: "Page cannot be found. Make sure that you have proper access and page still exists.",
+    renderAsLayout: true
 };

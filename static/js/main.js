@@ -1,18 +1,20 @@
 'use strict';
 
-import React from 'react'
-import { render } from 'react-dom'
+import React from 'react';
+import { render } from 'react-dom';
+import { Router, Route, browserHistory } from 'react-router';
 
-import Header from './components/Header'
-import QuestionnaireForm from './components/QuestionnaireForm'
+import Home from './components/home/Home';
+import QuestionnaireForm from './components/questionnaire/QuestionnaireForm';
+
+import NotFound from './components/NotFound';
 
 
 render(
-  <div>
-      <Header />
-      <div className="container">
-          <QuestionnaireForm schemaSlug={window.location.pathname.split('/')[2]} />
-      </div>
-  </div>,
-  document.getElementById('content')
+    <Router history={browserHistory}>
+        <Route path="/" component={Home} />
+        <Route path="/query/:schemaSlug" component={QuestionnaireForm} />
+        <Route path="*" component={NotFound} />
+    </Router>,
+    document.getElementById('content')
 );

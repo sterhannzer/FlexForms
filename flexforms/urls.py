@@ -20,5 +20,5 @@ from django.views.generic import TemplateView
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^forms/', include('forms.urls', namespace='forms')),
-    url(r'^query/(?P<id>\d+)/$', TemplateView.as_view(template_name='base.html'), name='base'),
+    url(r'^(?!forms)|(\\/)$', TemplateView.as_view(template_name='base.html'), name='base'),
 ]
