@@ -5,13 +5,15 @@ import React, { Component, PropTypes } from 'react';
 import { Nav, NavItem, Navbar } from 'react-bootstrap';
 
 import QuestionnaireHeader from './QuestionnaireHeader';
+import NotFound from './NotFound'
 
 
 export default class QuestionnaireForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            schema: {}
+            schema: {},
+            schemaLoaded: false
         }
     };
 
@@ -20,16 +22,23 @@ export default class QuestionnaireForm extends Component {
     }
 
     render() {
+        if (this.state.schemaLoaded && !this.state.schema.url) {
+            return <NotFound />;
+        }
+
         return <QuestionnaireHeader
-            title={this.props.title}
-            description={this.props.description}
+            title={this.state.schema.title}
+            description={this.state.schema.description}
         />;
     }
 
     loadSchema(slug) {
         fetch(this.props.schemaUrl + slug, {})
             .then(response => response.json())
-            .then(schema => this.setState({ schema: schema }))
+            .then(schema => this.setState({
+                schema: schema,
+                schemaLoaded: true
+            }))
             .catch(err => console.error(url, err.toString()));
     }
 
