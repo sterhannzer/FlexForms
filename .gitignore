@@ -72,3 +72,8 @@ docs/_build/
 #osx
 .DS_Store
 .DS_Store?
+
+# js and static files
+node_modules/
+static/build/
+public/
