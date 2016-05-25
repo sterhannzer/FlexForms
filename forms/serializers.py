@@ -31,6 +31,7 @@ class SchemaSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Schema
         fields = (
+            'id',
             'url',
             'title',
             'description',

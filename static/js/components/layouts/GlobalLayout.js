@@ -1,3 +1,4 @@
+/* global fetch */
 'use strict';
 
 import React, { Component, PropTypes } from 'react';
@@ -17,5 +18,12 @@ export default class GlobalLayout extends Component {
 
     renderContent() {
         return null;
+    }
+
+    loadData(url, callback) {
+        fetch(url, {})
+            .then(response => response.json())
+            .then(callback)
+            .catch(err => console.error(url, err.toString()));
     }
 }

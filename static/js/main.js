@@ -13,7 +13,7 @@ import NotFound from './components/NotFound';
 render(
     <Router history={browserHistory}>
         <Route path="/" component={Home} />
-        <Route path="/query/:schemaSlug" component={QuestionnaireForm} />
+        <Route path="/questionnaires/:schemaSlug" component={QuestionnaireForm} />
         <Route path="*" component={NotFound} />
     </Router>,
     document.getElementById('content')
