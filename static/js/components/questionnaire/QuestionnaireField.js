@@ -5,6 +5,29 @@ import { FormGroup, FormControl, ControlLabel, Col } from 'react-bootstrap';
 
 
 export default class QuestionnaireField extends Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            value: this.props.field.initial_value
+        }
+    }
+
+    getValidationState() {
+        var isRequired = this.props.field.is_required,
+            length = this.state.value.length;
+
+        if (isRequired && length == 0) return 'error';
+    }
+
+    isValid() {
+        return this.getValidationState() !== 'error';
+    }
+
+    handleChange(e) {
+        this.setState({ value: e.target.value });
+    }
+
     render() {
         var field = 'input',
             type = 'text';
@@ -17,7 +40,7 @@ export default class QuestionnaireField extends Component {
             type = 'number';
         }
 
-        return <FormGroup controlId="formHorizontalPassword">
+        return <FormGroup validationState={this.getValidationState()}>
             <Col componentClass={ControlLabel} sm={2}>
                 {this.props.field.label}
             </Col>
@@ -26,7 +49,8 @@ export default class QuestionnaireField extends Component {
                     componentClass={field}
                     type={type}
                     placeholder={this.props.field.help_text}
-                    defaultValue={this.props.field.initial_value}
+                    value={this.state.value}
+                    onChange={this.handleChange.bind(this)}
                 />
             </Col>
         </FormGroup>

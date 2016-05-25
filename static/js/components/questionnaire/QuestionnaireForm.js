@@ -1,7 +1,7 @@
 'use strict';
 
 import React, { Component, PropTypes } from 'react';
-import { Form, FormGroup, Col, Button } from 'react-bootstrap';
+import { Form, FormGroup, Col, Button, Alert } from 'react-bootstrap';
 
 import GlobalLayout from '../layouts/GlobalLayout';
 import NotFound from '../NotFound';
@@ -15,7 +15,9 @@ export default class QuestionnaireForm extends GlobalLayout {
         super(props);
         this.state = {
             schema: {},
-            schemaLoaded: false
+            schemaLoaded: false,
+            submitted: false,
+            formValid: false
         }
     };
 
@@ -29,23 +31,30 @@ export default class QuestionnaireForm extends GlobalLayout {
         );
     }
 
+    handleSubmit(e) {
+        var errors = document.querySelectorAll(".has-error"),
+            isValid = false;
+
+        if (!errors.length) {
+            isValid = true
+        }
+
+        this.setState({
+            submitted: true,
+            formValid: isValid
+        });
+    }
+
     renderContent() {
         var form = null;
 
         if (this.state.schemaLoaded && !this.state.schema.url) {
-            return <NotFound
-                title={"Questionnaire Not Found!"}
-                body={"Questionnaire cannot be found in current location. Please make sure that you have proper access and questionnaire is still valid."}
-                renderAsLayout={false}
-            />;
+            return this.renderNotFoundMessage();
         } else if (this.state.schemaLoaded) {
-            form = <Form horizontal>
+            form = <Form horizontal ref="questionnaireForm">
+                {this.renderErrorMessage()}
                 {this.renderFields()}
-                <FormGroup>
-                    <Col smOffset={2} sm={10}>
-                        <Button type="submit">{"Save my answers"}</Button>
-                    </Col>
-                </FormGroup>
+                {this.renderSubmitButton()}
             </Form>;
         }
 
@@ -60,10 +69,32 @@ export default class QuestionnaireForm extends GlobalLayout {
         </div>;
     }
 
+    renderNotFoundMessage() {
+        var title = "Questionnaire Not Found!",
+            body = "Questionnaire cannot be found in current location. Please " +
+            "make sure that you have proper access and questionnaire is still valid.";
+
+        return <NotFound title={title} body={body} renderAsLayout={false} />;
+    }
+
+    renderErrorMessage() {
+        if (this.state.submitted && !this.state.formValid) {
+            return <Alert bsStyle="danger">{"I can't send it! Please validate your data."}</Alert>
+        }
+    }
+
     renderFields() {
         return this.state.schema.fields.map(function (field) {
             return <QuestionnaireField field={field} key={field.id} />
         });
+    }
+
+    renderSubmitButton() {
+        return <FormGroup>
+            <Col smOffset={2} sm={10}>
+                <Button onClick={this.handleSubmit.bind(this)}>{"Save my answers"}</Button>
+            </Col>
+        </FormGroup>;
     }
 };
 
