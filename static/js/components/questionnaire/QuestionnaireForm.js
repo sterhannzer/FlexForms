@@ -1,4 +1,3 @@
-/* global fetch */
 'use strict';
 
 import React, { Component, PropTypes } from 'react';
@@ -20,7 +19,13 @@ export default class QuestionnaireForm extends GlobalLayout {
     };
 
     componentDidMount() {
-        this.loadSchema(this.props.params.schemaSlug);
+        this.loadData(
+            this.props.schemaUrl + this.props.params.schemaSlug + '/',
+            schema => this.setState({
+                schema: schema,
+                schemaLoaded: true
+            })
+        );
     }
 
     renderContent() {
@@ -36,16 +41,6 @@ export default class QuestionnaireForm extends GlobalLayout {
             title={this.state.schema.title}
             description={this.state.schema.description}
         />;
-    }
-
-    loadSchema(slug) {
-        fetch(this.props.schemaUrl + slug, {})
-            .then(response => response.json())
-            .then(schema => this.setState({
-                schema: schema,
-                schemaLoaded: true
-            }))
-            .catch(err => console.error(slug, err.toString()));
     }
 
 };
