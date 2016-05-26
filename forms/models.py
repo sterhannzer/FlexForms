@@ -8,9 +8,13 @@ class Schema(models.Model):
     title = models.CharField(max_length=128)
     description = models.TextField()
     owner = models.ForeignKey(User, null=True)
+    is_published = models.BooleanField()
 
     def __str__(self):
         return self.title
+
+    def questionnaire_url(self):
+        return "/questionnaire/{}/".format(self.id)
 
 
 class SchemaField(SortableMixin):

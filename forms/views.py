@@ -7,7 +7,7 @@ from forms.serializers import SchemaSerializer, QuestionnaireSerializer
 
 
 class SchemaViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Schema.objects.all()
+    queryset = Schema.objects.filter(is_published=True)
     serializer_class = SchemaSerializer
 
 

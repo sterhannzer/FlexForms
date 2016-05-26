@@ -27,7 +27,7 @@ class SchemaFieldInline(SortableTabularInline):
 
 class SchemaAdmin(NonSortableParentAdmin):
     save_as = True
-    list_display = ('title', 'owner')
+    list_display = ('title', 'owner', 'questionnaire_url', 'is_published')
     readonly_fields = ('owner',)
     inlines = (SchemaFieldInline,)
 
