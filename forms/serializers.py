@@ -8,7 +8,7 @@ from forms.models import (
 )
 
 
-class SchemaFieldsSerializer(serializers.ModelSerializer):
+class SchemaFieldSerializer(serializers.ModelSerializer):
     class Meta:
         model = SchemaField
         fields = (
@@ -23,7 +23,7 @@ class SchemaFieldsSerializer(serializers.ModelSerializer):
 
 
 class SchemaSerializer(serializers.HyperlinkedModelSerializer):
-    fields = SchemaFieldsSerializer(many=True, read_only=True)
+    fields = SchemaFieldSerializer(many=True, read_only=True)
     url = serializers.HyperlinkedIdentityField(
         view_name='forms:schema-detail'
     )
@@ -39,7 +39,7 @@ class SchemaSerializer(serializers.HyperlinkedModelSerializer):
         )
 
 
-class QuestionnaireFieldsSerializer(serializers.ModelSerializer):
+class QuestionnaireValueSerializer(serializers.ModelSerializer):
     class Meta:
         model = QuestionnaireValue
         fields = (
@@ -49,16 +49,26 @@ class QuestionnaireFieldsSerializer(serializers.ModelSerializer):
 
 
 class QuestionnaireSerializer(serializers.HyperlinkedModelSerializer):
-    values = QuestionnaireFieldsSerializer(many=True, read_only=True)
+    values = QuestionnaireValueSerializer(many=True)
     url = serializers.HyperlinkedIdentityField(
         view_name='forms:questionnaire-detail'
     )
     schema = serializers.HyperlinkedRelatedField(
         view_name='forms:schema-detail',
-        many=False,
-        read_only=True
+        queryset=Schema.objects.all()
     )
 
     class Meta:
         model = Questionnaire
         fields = ('url', 'created_date', 'schema', 'values')
+
+    def create(self, validated_data):
+        values = validated_data.pop('values')
+        questionnaire = super(QuestionnaireSerializer, self).create(validated_data)
+        for value in values:
+            QuestionnaireValue.objects.create(
+                field_id=value.get('field_id', ''),
+                value=value.get('value', ''),
+                questionnaire=questionnaire
+            )
+        return questionnaire
