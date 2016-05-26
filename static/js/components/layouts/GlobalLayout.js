@@ -26,4 +26,12 @@ export default class GlobalLayout extends Component {
             .then(callback)
             .catch(err => console.error(url, err.toString()));
     }
+
+    sendData(url, data, callback) {
+        var headers = { "Content-type": "application/json" };
+        fetch(url, { method: "POST", headers: headers, body: data })
+            .then(response => response.json())
+            .then(callback)
+            .catch(err => console.error(url, err.toString()));
+    }
 }

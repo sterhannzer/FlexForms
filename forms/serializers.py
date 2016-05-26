@@ -63,7 +63,7 @@ class QuestionnaireSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('url', 'created_date', 'schema', 'values')
 
     def create(self, validated_data):
-        values = validated_data.pop('values')
+        values = validated_data.pop('values', [])
         questionnaire = super(QuestionnaireSerializer, self).create(validated_data)
         for value in values:
             QuestionnaireValue.objects.create(

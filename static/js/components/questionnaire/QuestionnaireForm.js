@@ -16,14 +16,19 @@ export default class QuestionnaireForm extends GlobalLayout {
         this.state = {
             schema: {},
             schemaLoaded: false,
-            submitted: false,
-            formValid: false
+            questionnaireSaved: false,
+            isSubmitting: false,
+            formValid: true
         }
-    };
+    }
+
+    getSchemaUrl() {
+        return this.props.schemaUrl + this.props.params.schemaSlug + '/';
+    }
 
     componentDidMount() {
         this.loadData(
-            this.props.schemaUrl + this.props.params.schemaSlug + '/',
+            this.getSchemaUrl(),
             schema => this.setState({
                 schema: schema,
                 schemaLoaded: true
@@ -31,18 +36,59 @@ export default class QuestionnaireForm extends GlobalLayout {
         );
     }
 
-    handleSubmit(e) {
+    handleSubmit() {
         var errors = document.querySelectorAll(".has-error"),
-            isValid = false;
+            isSubmitting = false;
 
         if (!errors.length) {
-            isValid = true
+            isSubmitting = true;
+
+            this.sendData(
+                this.props.questionnaireUrl,
+                this.getFormData(),
+                response => !!response.url && this.setState({
+                    questionnaireSaved: true
+                })
+            );
         }
 
         this.setState({
-            submitted: true,
-            formValid: isValid
+            isSubmitting: isSubmitting,
+            formValid: !errors.length
         });
+    }
+
+    getFormData() {
+        var values = [],
+            date = new Date(),
+            that = this,
+            fieldRefs,
+            formData;
+
+
+        fieldRefs = Object.keys(this.refs).filter(
+            field => field.startsWith("questionnaireField")
+        );
+
+        fieldRefs.forEach(function (field) {
+            var value = that.refs[field].state.value,
+                fieldId = that.refs[field].props.field.id;
+
+            if (value) {
+                values.push({
+                    value: value,
+                    field_id: fieldId
+                });
+            }
+        });
+
+        formData = {
+            created_date: date.toISOString(),
+            schema: this.getSchemaUrl(),
+            values: values
+        };
+
+        return JSON.stringify(formData);
     }
 
     renderContent() {
@@ -52,14 +98,14 @@ export default class QuestionnaireForm extends GlobalLayout {
             return <div></div>;
 
         if (!this.state.schema.url) {
-            return this.renderMessageMessage();
+            return this.renderNotFoundMessage();
         }
-        else if (this.state.formValid) {
+        else if (this.state.questionnaireSaved) {
             return this.renderSuccessMessage();
         }
         else {
             form = <Form horizontal ref="questionnaireForm">
-                {this.state.submitted && !this.state.formValid ? this.renderErrorMessage() : null}
+                {!this.state.formValid ? this.renderValidationMessage() : null}
                 {this.renderFields()}
                 {this.renderSubmitButton()}
             </Form>;
@@ -84,7 +130,7 @@ export default class QuestionnaireForm extends GlobalLayout {
         return <Message title={title} body={body} renderAsLayout={false} />;
     }
 
-    renderMessageMessage() {
+    renderNotFoundMessage() {
         var title = "Questionnaire Not Found!",
             body = "Questionnaire cannot be found in current location. Please " +
             "make sure that you have proper access and questionnaire is still valid.";
@@ -92,7 +138,7 @@ export default class QuestionnaireForm extends GlobalLayout {
         return <Message title={title} body={body} renderAsLayout={false} />;
     }
 
-    renderErrorMessage() {
+    renderValidationMessage() {
         var body = "I can't send it! Please validate your data.";
 
         return <Alert bsStyle="danger">{body}</Alert>
@@ -100,14 +146,28 @@ export default class QuestionnaireForm extends GlobalLayout {
 
     renderFields() {
         return this.state.schema.fields.map(function (field) {
-            return <QuestionnaireField field={field} key={field.id} />
+            return <QuestionnaireField
+                field={field}
+                key={field.id}
+                ref={"questionnaireField" + field.id}
+            />
         });
     }
 
     renderSubmitButton() {
+        var text = "Save my answers",
+            disabled = false;
+
+        if (this.state.isSubmitting) {
+            text = "Saving...";
+            disabled = true;
+        }
+
         return <FormGroup>
             <Col smOffset={2} sm={10}>
-                <Button onClick={this.handleSubmit.bind(this)}>{"Save my answers"}</Button>
+                <Button onClick={this.handleSubmit.bind(this)} disabled={disabled}>
+                    {text}
+                </Button>
             </Col>
         </FormGroup>;
     }
