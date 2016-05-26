@@ -28,6 +28,7 @@ class SchemaFieldInline(SortableTabularInline):
 class SchemaAdmin(NonSortableParentAdmin):
     save_as = True
     list_display = ('title', 'owner', 'questionnaire_url', 'is_published')
+    list_filter = ('owner', 'is_published')
     readonly_fields = ('owner',)
     inlines = (SchemaFieldInline,)
 
@@ -38,6 +39,12 @@ class SchemaAdmin(NonSortableParentAdmin):
             request, obj, form, change
         )
 
+    def get_queryset(self, request):
+        queryset = super(SchemaAdmin, self).get_queryset(request)
+        if request.user.is_superuser:
+            return queryset
+        return queryset.filter(owner=request.user)
+
 
 class QuestionnaireValueInline(admin.TabularInline):
     model = QuestionnaireValue
@@ -45,7 +52,17 @@ class QuestionnaireValueInline(admin.TabularInline):
 
 
 class QuestionnaireAdmin(admin.ModelAdmin):
+    list_display = ('schema', 'created_date')
+    list_filter = ('schema', 'created_date')
     inlines = (QuestionnaireValueInline,)
+
+    def get_queryset(self, request):
+        queryset = super(QuestionnaireAdmin, self).get_queryset(request)
+        if request.user.is_superuser:
+            return queryset
+        return queryset.select_related('schema__owner').filter(
+            schema__owner=request.user
+        )
 
 
 admin.site.register(Schema, SchemaAdmin)

@@ -10,6 +10,10 @@ class Schema(models.Model):
     owner = models.ForeignKey(User, null=True)
     is_published = models.BooleanField()
 
+    class Meta:
+        verbose_name = "Questionnaire Schema"
+        verbose_name_plural = "Questionnaire Schemas"
+
     def __str__(self):
         return self.title
 
@@ -42,6 +46,10 @@ class SchemaField(SortableMixin):
 class Questionnaire(models.Model):
     created_date = models.DateTimeField()
     schema = models.ForeignKey(Schema)
+
+    class Meta:
+        verbose_name = "Questionnaire Answer"
+        verbose_name_plural = "Questionnaire Answers"
 
 
 class QuestionnaireValue(models.Model):
