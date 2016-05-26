@@ -1,0 +1,39 @@
+{
+  "name": "QApp",
+  "version": "1.0.0",
+  "description": "QApp is a web application to carry out a surveys by customised forms.",
+  "scripts": {
+    "watch": "watchify static/js/main.js -dv -t babelify -o static/build/main.min.js",
+    "build": "NODE_ENV=production browserify static/js/main.js -t babelify -g uglifyify -o static/build/main.min.js",
+    "test": "standard --verbose | snazzy"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sterhannzer/FlexForms"
+  },
+  "dependencies": {
+    "body-parser": "^1.14.1",
+    "express": "^4.13.3",
+    "marked": "^0.3.5",
+    "react": "~0.14.0",
+    "react-dom": "~0.14.0",
+    "whatwg-fetch": "~0.10.1",
+    "browserify": "~12.0.2",
+    "standard": "~5.4.1",
+    "underscore": "*",
+    "requirejs": "^2.2.0",
+    "react-bootstrap": "^0.29",
+    "react-router": "^3.0.0"
+  },
+  "devDependencies": {
+    "babel-preset-es2015": "^6.1.2",
+    "babel-preset-react": "^6.1.2",
+    "babelify": "^7.2.0",
+    "browserify": "^12.0.0",
+    "parallelshell": "^2.0.0",
+    "snazzy": "^2.0.1",
+    "standard": "^5.3.1",
+    "uglifyify": "^3.0.1",
+    "watchify": "^3.4.0"
+  }
+}

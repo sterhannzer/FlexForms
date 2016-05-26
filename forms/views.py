@@ -11,6 +11,6 @@ class SchemaViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = SchemaSerializer
 
 
-class QuestionnaireViewSet(viewsets.ReadOnlyModelViewSet):
+class QuestionnaireViewSet(viewsets.ModelViewSet):
     queryset = Questionnaire.objects.all()
     serializer_class = QuestionnaireSerializer
