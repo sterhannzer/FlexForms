@@ -11,8 +11,8 @@ export default class Home extends GlobalLayout {
     constructor(props) {
         super(props);
         this.state = {
-            schemas: {},
-            schemasLoaded: false
+            data: {},
+            dataLoaded: false
         }
     };
 
