@@ -15,6 +15,23 @@ from forms.models import (
 )
 
 
+class SchemaFilter(admin.SimpleListFilter):
+    title = 'schema'
+    parameter_name = 'schema'
+
+    def lookups(self, request, model_admin):
+        schemas = Schema.objects.all()
+        if not request.user.is_superuser:
+            schemas = Schema.objects.filter(owner=request.user)
+        return set((schema.id, schema.title) for schema in schemas)
+
+    def queryset(self, request, queryset):
+        if self.value():
+            return queryset.filter(schema_id=self.value())
+        else:
+            return queryset
+
+
 class SchemaFieldInline(SortableTabularInline):
     model = SchemaField
     extra = 0
@@ -28,9 +45,15 @@ class SchemaFieldInline(SortableTabularInline):
 class SchemaAdmin(NonSortableParentAdmin):
     save_as = True
     list_display = ('title', 'owner', 'questionnaire_url', 'is_published')
-    list_filter = ('owner', 'is_published')
+    list_filter_admin = ('owner', 'is_published')
+    list_filter = ('is_published',)
     readonly_fields = ('owner',)
     inlines = (SchemaFieldInline,)
+
+    def get_list_filter(self, request):
+        if request.user.is_superuser:
+            return self.list_filter_admin
+        return super(SchemaAdmin, self).get_list_filter(request)
 
     def save_model(self, request, obj, form, change):
         if not change:
@@ -53,7 +76,7 @@ class QuestionnaireValueInline(admin.TabularInline):
 
 class QuestionnaireAdmin(admin.ModelAdmin):
     list_display = ('schema', 'created_date')
-    list_filter = ('schema', 'created_date')
+    list_filter = (SchemaFilter, 'created_date')
     inlines = (QuestionnaireValueInline,)
 
     def get_queryset(self, request):
