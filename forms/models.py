@@ -18,7 +18,7 @@ class Schema(models.Model):
         return self.title
 
     def questionnaire_url(self):
-        return "/questionnaire/{}/".format(self.id)
+        return "/questionnaires/{}/".format(self.id)
 
 
 class SchemaField(SortableMixin):
