@@ -4,7 +4,7 @@ from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from forms.models import Schema, Questionnaire
+from forms.models import Schema, Questionnaire, SchemaField, QuestionnaireValue
 
 from forms.serializers import SchemaSerializer, QuestionnaireSerializer
 
@@ -27,10 +27,31 @@ class QuestionnaireSummary(object):
             self.schema = Schema.objects.get(id=schema_id)
 
     def fetch(self):
+        result = []
         if not self.schema:
             return
+        schema_fields = SchemaField.objects.filter(schema=self.schema)
 
-        return []
+        for schema_field in schema_fields:
+            field_result = {
+                'label': schema_field.label,
+                'type': schema_field.type,
+                'values': []
+            }
+            field_values = QuestionnaireValue.objects.filter(field_id=schema_field.id)
+
+            values = field_result['values']
+            for value in field_values:
+                if field_result['type'] == 'int':
+                    values.append(int(value.value))
+                else:
+                    values.append(value.value)
+
+            if len(values) and field_result['type'] == 'int':
+                field_result['average'] = sum(values)/len(values)
+
+            result.append(field_result)
+        return result
 
 
 class QuestionnaireSummaryView(APIView):
