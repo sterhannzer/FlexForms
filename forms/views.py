@@ -59,4 +59,4 @@ class QuestionnaireSummaryView(APIView):
     def get(self, request, *args, **kwargs):
         summary = QuestionnaireSummary(schema_id=kwargs.get('schema_id'))
         result = summary.fetch()
-        return Response(result, status=200)
+        return Response(result, status=200, content_type="application/json")
